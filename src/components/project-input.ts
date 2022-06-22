@@ -1,7 +1,9 @@
-/// <reference path="base-component.ts" />
+import Cmp from "./base-component.js";
+import * as Validation from "../util/validation.js";
+import { autobind as Autobind } from "../decorators/autobind.js";
+import { projectState } from "../state/project-state.js";
 
-namespace App {
-  export  class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
+  export  class ProjectInput extends Cmp<HTMLDivElement, HTMLFormElement> {
     titleInputElement: HTMLInputElement;
     descriptionInputElement: HTMLInputElement;
     peopleInputElement: HTMLInputElement;
@@ -12,7 +14,7 @@ namespace App {
       this.descriptionInputElement = this.element.querySelector('#description') as HTMLInputElement;
       this.peopleInputElement = this.element.querySelector('#people') as HTMLInputElement;
       this.configure();
-    }
+    };
 
     configure() {
       this.element.addEventListener('submit', this.submitHandler);
@@ -25,43 +27,42 @@ namespace App {
       const enteredDescription = this.descriptionInputElement.value;
       const enteredPeople = this.peopleInputElement.value;
 
-      const titleValidatable: Validatable = {
+      const titleValidatable: Validation.Validatable = {
         value: enteredTitle,
         required: true
       };
-      const descriptionValidatable: Validatable = {
+      const descriptionValidatable: Validation.Validatable = {
         value: enteredDescription,
         required: true,
         minLength: 5
       };
-      const peopleValidatable: Validatable = {
+      const peopleValidatable: Validation.Validatable = {
         value: +enteredPeople,
         required: true,
         min: 1,
         max: 5
       };
 
-
       if
         (
-        !validate(titleValidatable) ||
-        !validate(descriptionValidatable) ||
-        !validate(peopleValidatable)
+        !Validation.validate(titleValidatable) ||
+        !Validation.validate(descriptionValidatable) ||
+        !Validation.validate(peopleValidatable)
       ) {
         alert('Invalid input, please try again!');
         return;
       } else {
         return [enteredTitle, enteredDescription, +enteredPeople];
-      }
-    }
+      };
+    };
   
     private clearInputs() {
       this.titleInputElement.value = '';
       this.descriptionInputElement.value = '';
       this.peopleInputElement.value = '';
-    }
+    };
   
-    @autobind
+    @Autobind
     private submitHandler(event: Event) {
       event.preventDefault();
       const userInput = this.gatherUserInput();
@@ -69,9 +70,6 @@ namespace App {
         const [title, desc, people] = userInput;
         projectState.addProject(title, desc, people);
         this.clearInputs()
-      }
+      };
     };
-
-  }
-
-}
+};

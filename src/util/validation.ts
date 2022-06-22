@@ -1,14 +1,13 @@
-namespace App {
-  export  interface Validatable {
+export  interface Validatable {
     value: string | number;
     required?: boolean;
     minLength?: number;
     maxLength?: number;
     min?: number;
     max?: number;
-  }
+};
 
- export function validate(validatableInput: Validatable) {
+export function validate(validatableInput: Validatable) {
     let isValid = true;
     if (validatableInput.required) {
       isValid = isValid && validatableInput.value.toString().trim().length !== 0;
@@ -25,10 +24,6 @@ namespace App {
   
     if (validatableInput.max != null && typeof validatableInput.value === 'number') {
       isValid = isValid && validatableInput.value <= validatableInput.max;
-    }
-
+  };
     return isValid;
-  }
-
-
-}
+};

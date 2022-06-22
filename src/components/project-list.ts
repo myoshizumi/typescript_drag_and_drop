@@ -1,7 +1,11 @@
-/// <reference path="base-component.ts" />
-
-namespace App {
-   export class ProjectList extends Component<HTMLDivElement, HTMLElement>
+import { DragTarget } from '../models/drag-drop.js';
+import { Project, ProjectStatus } from '../models/project.js';
+import Component from './base-component.js';
+import { autobind } from '../decorators/autobind.js';
+import { projectState } from '../state/project-state.js';
+import { ProjectItem } from './project-item.js';
+ 
+export class ProjectList extends Component<HTMLDivElement, HTMLElement>
     implements DragTarget {
     assignedProjects: Project[];
 
@@ -11,7 +15,7 @@ namespace App {
 
       this.configure();
       this.renderContent();
-    }
+  };
 
     @autobind
     dragOverHandler(event: DragEvent) {
@@ -19,22 +23,20 @@ namespace App {
         event.preventDefault();
         const listEl = this.element.querySelector('ul')!;
         listEl.classList.add('droppable');
-      }
-    }
+      };
+  };
 
     @autobind
     dropHandler(event: DragEvent) {
       const prjId = event.dataTransfer!.getData('text/plain');
       projectState.moveProject(prjId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
-    }
+  };
 
     @autobind
     dragLeaveHandler(_: DragEvent) {
-
       const listEl = this.element.querySelector('ul')!;
       listEl.classList.remove('droppable');
-
-    }
+  };
 
     configure() {
       this.element.addEventListener('dragover', this.dragOverHandler);
@@ -57,15 +59,13 @@ namespace App {
       this.element.querySelector('ul')!.id = listId;
       this.element.querySelector('h2')!.textContent =
         this.type.toUpperCase() + ' PROJECTS';
-    }
+  };
 
     private renderProjects() {
       const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
       listEl.innerHTML = '';
       for (const prjItem of this.assignedProjects) {
         new ProjectItem(this.element.querySelector('ul')!.id, prjItem);
-      }
-    }
+      };
   };
-
-}
+};
